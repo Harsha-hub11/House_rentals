@@ -13,7 +13,7 @@ const db = require('./services/db');
 // Use the Pug templating engine
 app.set('view engine', 'pug');
 app.set('views', './app/views');
-// Create a route for root - /
+
 app.get('/', (req, res) => {
     const reviews = [
         { name: "John Doe", comment: "Fantastic service and great properties!", rating: 5 },
@@ -22,6 +22,7 @@ app.get('/', (req, res) => {
     ];
     res.render('home', { reviews });
 });
+
 // Create a route for testing the db
 app.get("/db_test", function(req, res) {
     // Assumes a table called test_table exists in your database
@@ -29,6 +30,16 @@ app.get("/db_test", function(req, res) {
     db.query(sql).then(results => {
         console.log(results);
         res.send(results)
+    });
+});
+
+// Task 2 display a formatted list of students
+app.get("/all-properties-formatted", function(req, res) {
+    var sql = 'select * from properties';
+    db.query(sql).then(results => {
+    	    // Send the results rows to the all-students template
+    	    // The rows will be in a variable called data
+        res.render('all-properties', {data: results});
     });
 });
 
