@@ -13,12 +13,15 @@ const db = require('./services/db');
 // Use the Pug templating engine
 app.set('view engine', 'pug');
 app.set('views', './app/views');
-
 // Create a route for root - /
-app.get("/", function(req, res) {
-    res.send("Hello world!");
+app.get('/', (req, res) => {
+    const reviews = [
+        { name: "John Doe", comment: "Fantastic service and great properties!", rating: 5 },
+        { name: "Jane Smith", comment: "Found the perfect apartment for my needs.", rating: 4 },
+        { name: "Sam Wilson", comment: "Easy to use platform and friendly support!", rating: 5 },
+    ];
+    res.render('home', { reviews });
 });
-
 // Create a route for testing the db
 app.get("/db_test", function(req, res) {
     // Assumes a table called test_table exists in your database
