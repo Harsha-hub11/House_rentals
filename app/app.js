@@ -10,6 +10,10 @@ app.use(express.static("static"));
 // Get the functions in the db.js file to use
 const db = require('./services/db');
 
+// Use the Pug templating engine
+app.set('view engine', 'pug');
+app.set('views', './app/views');
+
 // Create a route for root - /
 app.get("/", function(req, res) {
     res.send("Hello world!");
