@@ -43,6 +43,20 @@ app.get("/all-properties-formatted", function(req, res) {
     });
 });
 
+app.get('/property-details/:id', function (req, res) {
+    const propertyId = req.params.id;
+    const sql = 'SELECT * FROM properties WHERE house_id = ?';
+    db.query(sql, [propertyId])
+        .then(result => {
+            if (result.length > 0) {
+                res.render('property-details', { property: result[0] });
+            } else {
+                res.render('property-details', { property: null });
+            }
+        })
+});
+
+
 // Create a route for /goodbye
 // Responds to a 'GET' request
 app.get("/goodbye", function(req, res) {

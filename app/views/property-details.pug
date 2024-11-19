@@ -1,0 +1,65 @@
+doctype html
+html
+  head
+    title Property Details
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css")
+  body
+    .container.mt-5
+      h1.text-center.mt-4.mb-4 Property Details
+      if property
+        div.card
+          div.card-header.bg-primary.text-white
+            h4
+              = property.house_type
+              |  - £
+              = isNaN(property.rent_amount) ? 'N/A' : parseFloat(property.rent_amount).toFixed(2)
+          div.card-body
+            table.table.table-bordered
+              tbody
+                tr
+                  th ID
+                  td= property.house_id
+                tr
+                  th Owner ID
+                  td= property.owner_id
+                tr
+                  th Address
+                  td= property.address
+                tr
+                  th City
+                  td= property.city
+                tr
+                  th State
+                  td= property.state
+                tr
+                  th Postal Code
+                  td= property.postal_code
+                tr
+                  th Type
+                  td= property.house_type
+                tr
+                  th Bedrooms
+                  td= property.bedrooms
+                tr
+                  th Bathrooms
+                  td= property.bathrooms
+                tr
+                  th Furnished
+                  td= property.furnished ? 'Yes' : 'No'
+                tr
+                  th Availability Status
+                  td= property.availability_status
+                tr
+                  th Description
+                  td= property.description
+                tr
+                  th Created At
+                  td= new Date(property.created_at).toLocaleString()
+                tr
+                  th Last Updated At
+                  td= new Date(property.updated_at).toLocaleString()
+      else
+        p.text-center.text-muted No property details available.
+
+      div.mt-4
+        a.btn.btn-secondary(href="/all-properties-formatted") Back to Properties List
