@@ -18,6 +18,7 @@ html
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       }
   body
+    include navbar
     .hero
       .text-center
         h1 Welcome to Rental Properties
@@ -35,5 +36,3 @@ html
                 p.card-text= review.comment
                 small.text-muted= `Rated: ${review.rating} stars`
 
-    .container.mt-5.text-center
-      a.btn.btn-primary.btn-lg(href="/all-properties-formatted") View All Properties

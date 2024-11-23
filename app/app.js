@@ -56,6 +56,13 @@ app.get('/property-details/:id', function (req, res) {
         })
 });
 
+app.get("/about", function(req, res) {
+    res.render('about');
+});
+
+app.get("/contact", function(req, res) {
+    res.render('contact');
+});
 
 // Create a route for /goodbye
 // Responds to a 'GET' request
