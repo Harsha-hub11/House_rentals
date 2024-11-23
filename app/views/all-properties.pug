@@ -7,6 +7,26 @@ html
     include navbar
     .container.mt-5
       h1.text-center All Rental Properties
+      .row.mb-4
+        .col-md-3.mb-2
+          label.form-label(for="city") City
+          input.form-control(type="text" name="city" id="city" placeholder="Enter city")
+        .col-md-3.mb-2
+          label.form-label(for="house_type") House Type
+          select.form-select(name="house_type" id="house_type")
+            option(value="") Select Type
+            option(value="apartment") Apartment
+            option(value="house") House
+            option(value="studio") Studio
+        .col-md-3.mb-2
+          label.form-label(for="availability_status") Status
+          select.form-select(name="availability_status" id="availability_status")
+            option(value="") Select Status
+            option(value="available") Available
+            option(value="rented") Rented
+        .col-md-3.mb-2
+          button.btn.btn-primary.mt-4(onclick="applyFilters()") Apply Filters
+
       if data.length
         table.table.table-striped.table-bordered.mt-4
           thead
@@ -32,3 +52,16 @@ html
       else
         p.text-center.text-muted No properties found.
 
+    script.
+      function applyFilters() {
+        var city = document.getElementById('city').value;
+        var house_type = document.getElementById('house_type').value;
+        var availability_status = document.getElementById('availability_status').value;
+
+        var query = '?';
+        if (city) query += `city=${city}&`;
+        if (house_type) query += `house_type=${house_type}&`;
+        if (availability_status) query += `availability_status=${availability_status}&`;
+        query = query.endsWith('&') ? query.slice(0, -1) : query;
+        window.location.href = '/all-properties-formatted' + query;
+      }

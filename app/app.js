@@ -33,14 +33,33 @@ app.get("/db_test", function(req, res) {
     });
 });
 
-// Task 2 display a formatted list of students
-app.get("/all-properties-formatted", function(req, res) {
-    var sql = 'select * from properties';
-    db.query(sql).then(results => {
-    	    // Send the results rows to the all-students template
-    	    // The rows will be in a variable called data
-        res.render('all-properties', {data: results});
-    });
+app.get("/all-properties-formatted", function (req, res) {
+    const { city, house_type, availability_status, page = 1 } = req.query;
+    const limit = 10;
+    const offset = (page - 1) * limit;
+
+    let sql = 'SELECT * FROM properties WHERE 1=1';
+    const params = [];
+
+    if (city) {
+        sql += ' AND city = ?';
+        params.push(city);
+    }
+    if (house_type) {
+        sql += ' AND house_type = ?';
+        params.push(house_type);
+    }
+    if (availability_status) {
+        sql += ' AND availability_status = ?';
+        params.push(availability_status);
+    }
+
+    sql += ` LIMIT ${limit} OFFSET ${offset}`;
+
+    db.query(sql, params)
+        .then(results => {
+            res.render('all-properties', { data: results, filters: req.query, page });
+        })
 });
 
 app.get('/property-details/:id', function (req, res) {
