@@ -9,6 +9,7 @@ html
         justify-content: center;
         align-items: center;
         height: 100vh;
+        background-color: #f0f0f0;
       }
       .auth-form {
         width: 100%;
@@ -21,6 +22,13 @@ html
         text-align: center;
         margin-top: 20px;
       }
+      .row-two-fields {
+        display: flex;
+        gap: 15px;
+      }
+      .row-two-fields .form-control {
+        flex: 1;
+      }
   body
     include navbar
     .container-fluid.auth-container
@@ -28,23 +36,39 @@ html
         .col-12
           .card.auth-form
             h3.text-center.mb-4 Register
-            form(action="/register" method="POST")
+            form(action="/userregistration" method="POST")
               .mb-3
                 label.form-label(for="username") Username
                 input#username.form-control(type="text" name="username" placeholder="Choose a username" required autofocus)
               .mb-3
                 label.form-label(for="email") Email Address
                 input#email.form-control(type="email" name="email" placeholder="Enter your email" required)
+              .mb-3.row-two-fields
+                .col
+                  label.form-label(for="fullname") Full Name
+                  input#fullname.form-control(type="text" name="fullname" placeholder="Full Name" required)
+                .col
+                  label.form-label(for="dob") Date of Birth
+                  input#dob.form-control(type="date" name="dob" required)
+              .mb-3.row-two-fields
+                .col
+                  label.form-label(for="password") Password
+                  input#password.form-control(type="password" name="password" placeholder="Create a password" required)
+                .col
+                  label.form-label(for="confirm-password") Confirm Password
+                  input#confirm-password.form-control(type="password" name="confirm-password" placeholder="Confirm your password" required)
               .mb-3
-                label.form-label(for="password") Password
-                input#password.form-control(type="password" name="password" placeholder="Create a password" required)
-              .mb-3
-                label.form-label(for="confirm-password") Confirm Password
-                input#confirm-password.form-control(type="password" name="confirm-password" placeholder="Confirm your password" required)
+                label.form-label(for="gender") Gender
+                select#gender.form-select(name="gender" required)
+                  option(value="") Select your gender
+                  option(value="male") Male
+                  option(value="female") Female
+                  option(value="other") Other
               .mb-3
                 label.form-label(for="terms")
                 input#terms.form-check-input(type="checkbox" name="terms" required)
-                span.form-check-label I agree to the terms and conditions
+                span.form-check-label I agree to the 
+                a(href="/terms-and-conditions" target="_blank") terms and conditions
               button.btn.btn-success.w-100(type="submit") Register
             .auth-switch
               | Already have an account? 
