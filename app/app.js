@@ -130,9 +130,9 @@ app.get('/register', function (req, res) {
 app.get('/forgot-password', function (req, res) {
     res.render('forgot-password');
 });
-app.get('/login', function (req, res) {
-    res.render('login');
-});
+// app.get('/login', function (req, res) {
+//     res.render('login');
+// });
 
 // Check submitted email and password pair
 app.post('/authenticate', async function (req, res) {
@@ -163,7 +163,7 @@ app.post('/authenticate', async function (req, res) {
     }
 });
 
-app.get("/", function (req, res) {
+app.get("/login", function (req, res) {
     try {
         if (req.session.uid) {
             res.redirect('/dashboard');
