@@ -51,6 +51,35 @@ app.get("/db_test", function(req, res) {
     });
 });
 
+app.get("/admin-dashboard", function (req, res) {
+    const { city, house_type, availability_status, page = 1 } = req.query;
+    const limit = 10;
+    const offset = (page - 1) * limit;
+
+    let sql = 'SELECT * FROM properties WHERE 1=1';
+    const params = [];
+
+    if (city) {
+        sql += ' AND city = ?';
+        params.push(city);
+    }
+    if (house_type) {
+        sql += ' AND house_type = ?';
+        params.push(house_type);
+    }
+    if (availability_status) {
+        sql += ' AND availability_status = ?';
+        params.push(availability_status);
+    }
+
+    sql += ` LIMIT ${limit} OFFSET ${offset}`;
+
+    db.query(sql, params)
+        .then(results => {
+            res.render('admin-dashboard', { data: results, filters: req.query, page });
+        })
+});
+
 app.get("/all-properties-formatted", function (req, res) {
     const { city, house_type, availability_status, page = 1 } = req.query;
     const limit = 10;
@@ -160,7 +189,7 @@ app.post('/authenticate', async function (req, res) {
         req.session.uid = uId;
         req.session.loggedIn = true;
         console.log(req.session.id);
-        res.redirect('/all-properties-formatted');
+        res.redirect('/admin-dashboard');
     } catch (err) {
         console.error(`Error while authenticating user:`, err.message);
         res.status(500).send('Internal Server Error');

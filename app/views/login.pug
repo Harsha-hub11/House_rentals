@@ -29,6 +29,8 @@ html
         .col-12
           .card.auth-form
             h3.text-center.mb-4 Login
+            if errorMessage
+              .alert.alert-danger(role="alert") #{errorMessage}
             form(action="/authenticate" method="POST")
               .mb-3
                 label.form-label(for="email") Email
