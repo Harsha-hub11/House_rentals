@@ -241,6 +241,48 @@ app.post("/submit-contact-form", async (req, res) => {
     }
 });
 
+// GET route to display property details for booking
+app.get('/bookings/:id', (req, res) => {
+    const propertyId = req.params.id;
+    const { success, error } = req.query;  // Capture success or error messages from the query string
+    
+    // Render the book-property template with the propertyId and messages
+    res.render('book-property', { 
+        property: propertyId, 
+        success: success,
+        error: error
+    });
+});
+
+
+
+app.post('/submit-booking/:id', async (req, res) => {
+    const propertyId = req.params.id;
+    const { start_date, end_date, customer_name, customer_email } = req.body;
+
+    // Validate input
+    if (!start_date || !end_date || !customer_name || !customer_email) {
+        return res.redirect(`/bookings/${propertyId}?error=All fields are required.`);
+    }
+
+    // Prepare SQL query to insert the booking
+    const sql = 'INSERT INTO bookings (property_id, start_date, end_date, customer_name, customer_email) VALUES (?, ?, ?, ?, ?)';
+    const values = [propertyId, start_date, end_date, customer_name, customer_email];
+
+    try {
+        await db.query(sql, values);
+
+        // Redirect to the booking page with a success message
+        res.redirect(`/bookings/${propertyId}?success=Booking successfully submitted!`);
+    } catch (err) {
+        console.error('Error saving booking:', err);
+
+        // Redirect to the booking page with an error message
+        res.redirect(`/bookings/${propertyId}?error=Internal server error, please try again later.`);
+    }
+});
+
+
 // create User api
 app.post('/userregistration', async (req, res) => {
     const { username, email, password, fullname, dob, gender } = req.body;

@@ -59,6 +59,11 @@ html
                 tr
                   th Last Updated At
                   td= new Date(property.updated_at).toLocaleString()
+
+            // Add a "Book" Button with the correct link
+            .mt-4
+              a.btn.btn-success(href=`/bookings/${property.house_id}`) Book Now
+
       else
         p.text-center.text-muted No property details available.
 
