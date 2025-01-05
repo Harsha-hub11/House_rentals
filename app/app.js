@@ -31,6 +31,7 @@ const db = require('./services/db');
 app.set('view engine', 'pug');
 app.set('views', './app/views');
 
+
 app.get('/', (req, res) => {
     const reviews = [
         { name: "John Doe", comment: "Fantastic service and great properties!", rating: 5 },
@@ -96,9 +97,12 @@ app.get("/about", function(req, res) {
     res.render('about');
 });
 
+// Route for rendering the contact page
 app.get("/contact", function(req, res) {
-    res.render('contact');
+    const { error, success } = req.query;
+    res.render('contact', { error, success });
 });
+
 
 app.get("/login", function(req, res) {
     res.render('login');
@@ -207,6 +211,33 @@ app.post('/set-password', async function (req, res) {
         }
     } catch (err) {
         console.error(`Error while adding password `, err.message);
+    }
+});
+
+// Create a route for handling /contactus POST requests
+app.post("/submit-contact-form", async (req, res) => {
+    const { name, email, message } = req.body;
+
+    // Validate input
+    if (!name || !email || !message) {
+        return res.redirect('/contact?error=All fields are required.');
+    }
+
+    // Prepare data to be stored (e.g., storing in a database, sending an email, etc.)
+    const sql = 'INSERT INTO contact_us(name, email, message) VALUES (?, ?, ?)';
+    const values = [name, email, message];
+
+    try {
+        // Save the message to the database
+        await db.query(sql, values);
+
+        // Redirect to the contact page with a success message
+        res.redirect('/contact?success=Your message has been received, we will get back to you soon.');
+    } catch (err) {
+        console.error("Error saving contact message:", err);
+
+        // Redirect to the contact page with an error message
+        res.redirect('/contact?error=Internal server error, please try again later.');
     }
 });
 
