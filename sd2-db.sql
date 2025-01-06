@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Generation Time: Nov 19, 2024 at 12:46 AM
+-- Generation Time: Jan 06, 2025 at 02:07 AM
 -- Server version: 8.2.0
 -- PHP Version: 8.2.8
 
@@ -24,12 +24,46 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `bookings`
+--
+
+CREATE TABLE `bookings` (
+  `booking_id` int NOT NULL,
+  `property_id` int NOT NULL,
+  `booking_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `customer_name` varchar(255) NOT NULL,
+  `customer_email` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `contact_us`
+--
+
+CREATE TABLE `contact_us` (
+  `id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `contact_us`
+--
+
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `properties`
 --
 
 CREATE TABLE `properties` (
   `house_id` int NOT NULL,
-  `owner_id` int NOT NULL,
   `address` varchar(255) NOT NULL,
   `city` varchar(100) NOT NULL,
   `state` varchar(100) NOT NULL,
@@ -49,21 +83,50 @@ CREATE TABLE `properties` (
 -- Dumping data for table `properties`
 --
 
-INSERT INTO `properties` (`house_id`, `owner_id`, `address`, `city`, `state`, `postal_code`, `rent_amount`, `house_type`, `bedrooms`, `bathrooms`, `furnished`, `availability_status`, `description`, `created_at`, `updated_at`) VALUES
-(1, 101, '123 Baker Street', 'London', 'Greater London', 'NW1 6XE', 2200.00, 'Apartment', 2, 1.5, 1, 'Available', 'Modern flat near central London', '2024-11-01 10:00:00', '2024-11-01 10:00:00'),
-(2, 102, '45 Elmwood Drive', 'Manchester', 'Greater Manchester', 'M15 4RG', 1500.00, 'Single-family', 3, 2.0, 0, 'Occupied', 'Spacious family home with garden', '2024-11-02 10:30:00', '2024-11-02 10:30:00'),
-(3, 103, '89 Queen Street', 'Edinburgh', 'Scotland', 'EH2 3NS', 1800.00, 'Townhouse', 4, 3.0, 1, 'Available', 'Stylish townhouse in the city center', '2024-11-03 11:00:00', '2024-11-03 11:00:00'),
-(4, 104, '10 Castle Road', 'Bristol', 'South West England', 'BS1 5DQ', 1400.00, 'Duplex', 2, 1.0, 0, 'Available', 'Compact duplex near the waterfront', '2024-11-04 12:00:00', '2024-11-04 12:00:00'),
-(5, 105, '32 High Street', 'Oxford', 'Oxfordshire', 'OX1 4AP', 1600.00, 'Apartment', 1, 1.0, 1, 'Under Maintenance', 'Cozy apartment near the university', '2024-11-05 09:00:00', '2024-11-05 09:00:00'),
-(6, 106, '7 Park Avenue', 'Cambridge', 'Cambridgeshire', 'CB2 1TT', 2000.00, 'Single-family', 3, 2.0, 1, 'Available', 'Modern home with a large garden', '2024-11-06 14:30:00', '2024-11-06 14:30:00'),
-(7, 107, '21 George Square', 'Glasgow', 'Scotland', 'G2 1DU', 1300.00, 'Apartment', 2, 1.0, 0, 'Available', 'Well-maintained flat in the city center', '2024-11-07 15:00:00', '2024-11-07 15:00:00'),
-(8, 108, '56 Willow Lane', 'Liverpool', 'Merseyside', 'L1 4AA', 1700.00, 'Townhouse', 3, 2.5, 1, 'Occupied', 'Renovated townhouse with parking', '2024-11-08 16:00:00', '2024-11-08 16:00:00'),
-(9, 109, '12 Royal Crescent', 'Bath', 'South West England', 'BA1 2LR', 2500.00, 'Single-family', 5, 3.5, 1, 'Available', 'Luxury home with historical charm', '2024-11-09 17:00:00', '2024-11-09 17:00:00'),
-(10, 110, '101 St. Mary Street', 'Cardiff', 'Wales', 'CF10 1DX', 1200.00, 'Apartment', 1, 1.0, 0, 'Available', 'Affordable flat in a central location', '2024-11-10 18:00:00', '2024-11-10 18:00:00');
+INSERT INTO `properties` (`house_id`, `address`, `city`, `state`, `postal_code`, `rent_amount`, `house_type`, `bedrooms`, `bathrooms`, `furnished`, `availability_status`, `description`, `created_at`, `updated_at`) VALUES
+(8, '56 Willow Lane', 'Liverpool', 'Merseyside', 'L1 4AA', 1700.00, 'Townhouse', 3, 2.5, 1, 'Occupied', 'Renovated townhouse with parking', '2024-11-08 16:00:00', '2024-11-08 16:00:00'),
+(9, '12 Royal Crescent', 'Bath', 'South West England', 'BA1 2LR', 2500.00, 'Single-family', 5, 3.5, 1, 'Available', 'Luxury home with historical charm', '2024-11-09 17:00:00', '2024-11-09 17:00:00'),
+(10, '101 St. Mary Street', 'Cardiff', 'Wales', 'CF10 1DX', 1200.00, 'Apartment', 1, 1.0, 0, 'Available', 'Affordable flat in a central location', '2024-11-10 18:00:00', '2024-11-10 18:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Users`
+--
+
+CREATE TABLE `Users` (
+  `id` int NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `fullname` varchar(100) NOT NULL,
+  `dob` date NOT NULL,
+  `gender` enum('male','female','other') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `Users`
+--
+
+INSERT INTO `Users` (`id`, `username`, `email`, `password`, `fullname`, `dob`, `gender`) VALUES
+(2, 'hello', 'admin@gmail.com', '$2a$10$eGZCqhUteyRhqaLQztc2nem0NlzenC9VWK.b.6Dg9Y4dEcIUV4YEi', 'admin', '2025-01-01', 'male');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `bookings`
+--
+ALTER TABLE `bookings`
+  ADD PRIMARY KEY (`booking_id`),
+  ADD KEY `property_id` (`property_id`);
+
+--
+-- Indexes for table `contact_us`
+--
+ALTER TABLE `contact_us`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `properties`
@@ -72,14 +135,48 @@ ALTER TABLE `properties`
   ADD PRIMARY KEY (`house_id`);
 
 --
+-- Indexes for table `Users`
+--
+ALTER TABLE `Users`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `bookings`
+--
+ALTER TABLE `bookings`
+  MODIFY `booking_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `contact_us`
+--
+ALTER TABLE `contact_us`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `properties`
 --
 ALTER TABLE `properties`
-  MODIFY `house_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `house_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `Users`
+--
+ALTER TABLE `Users`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `bookings`
+--
+ALTER TABLE `bookings`
+  ADD CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`property_id`) REFERENCES `properties` (`house_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
