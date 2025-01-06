@@ -2,7 +2,8 @@ doctype html
 html
   head
     title All Rental Properties
-    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css")
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css")
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")
   body
     include navbar1
     .container.mt-5
@@ -53,12 +54,66 @@ html
                 td
                   a.btn.btn-sm.btn-primary(href=`/property-details/${property.house_id}`) View Details
                 td
-                  a.btn.btn-sm.btn-warning(href=`/update-property/${property.house_id}`) Edit
-                  form(action=`/delete-property/${property.house_id}`, method="POST", style="display:inline;")
+                  button.btn.btn-sm.btn-warning(data-bs-toggle="modal" data-bs-target="#editModal" onclick=`openEditModal(${JSON.stringify(property)})`) Edit
+                  form(action=`/delete-property/${property.house_id}`, method="POST" style="display:inline;")
                     button.btn.btn-sm.btn-danger(type="submit") Delete
       else
         p.text-center.text-muted No properties found.
 
+    //- Edit Modal
+    .modal.fade#editModal(tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h5.modal-title#editModalLabel Edit Property
+            button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+          .modal-body
+            form(id="editForm" action="" method="POST")
+              input(type="hidden" name="house_id" id="house_id")
+              .mb-3
+                label(for="editAddress") Address
+                input.form-control(type="text" name="address" id="editAddress")
+              .mb-3
+                label(for="editCity") City
+                input.form-control(type="text" name="city" id="editCity")
+              .mb-3
+                label(for="editState") State
+                input.form-control(type="text" name="state" id="editState")
+              .mb-3
+                label(for="editPostalCode") Postal Code
+                input.form-control(type="text" name="postal_code" id="editPostalCode")
+              .mb-3
+                label(for="editRentAmount") Rent Amount
+                input.form-control(type="number" step="0.01" name="rent_amount" id="editRentAmount")
+              .mb-3
+                label(for="editHouseType") House Type
+                select.form-select(name="house_type" id="editHouseType")
+                  option(value="apartment") Apartment
+                  option(value="house") House
+                  option(value="studio") Studio
+              .mb-3
+                label(for="editBedrooms") Bedrooms
+                input.form-control(type="number" name="bedrooms" id="editBedrooms")
+              .mb-3
+                label(for="editBathrooms") Bathrooms
+                input.form-control(type="number" step="0.1" name="bathrooms" id="editBathrooms")
+              .mb-3
+                label(for="editFurnished") Furnished
+                select.form-select(name="furnished" id="editFurnished")
+                  option(value="1") Yes
+                  option(value="0") No
+              .mb-3
+                label(for="editStatus") Availability Status
+                select.form-select(name="availability_status" id="editStatus")
+                  option(value="available") Available
+                  option(value="rented") Rented
+                  option(value="under_maintenance") Under Maintenance
+              .mb-3
+                label(for="editDescription") Description
+                textarea.form-control(name="description" id="editDescription" rows="4")
+              button.btn.btn-primary(type="submit") Save Changes
+
+    //- JavaScript for Filters and Modal
     script.
       function applyFilters() {
         var city = document.getElementById('city').value;
@@ -72,3 +127,20 @@ html
         query = query.endsWith('&') ? query.slice(0, -1) : query;
         window.location.href = '/all-properties-formatted' + query;
       }
+
+      function openEditModal(property) {
+        document.getElementById('editForm').action = `/update-property/${property.house_id}`;
+        document.getElementById('house_id').value = property.house_id;
+        document.getElementById('editAddress').value = property.address;
+        document.getElementById('editCity').value = property.city;
+        document.getElementById('editState').value = property.state;
+        document.getElementById('editPostalCode').value = property.postal_code;
+        document.getElementById('editRentAmount').value = property.rent_amount;
+        document.getElementById('editHouseType').value = property.house_type;
+        document.getElementById('editBedrooms').value = property.bedrooms;
+        document.getElementById('editBathrooms').value = property.bathrooms;
+        document.getElementById('editFurnished').value = property.furnished;
+        document.getElementById('editStatus').value = property.availability_status;
+        document.getElementById('editDescription').value = property.description;
+      }
+

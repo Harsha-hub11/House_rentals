@@ -415,38 +415,87 @@ app.get("/update-property/:id", function(req, res) {
     });
 });
 
-// Route for handling /update-property PUT requests
-app.post("/update-property/:id", async (req, res) => {
+// Route for rendering the property update page
+app.get("/update-property/:id", function (req, res) {
+    const { error, success } = req.query;
     const propertyId = req.params.id;
-    const { address, city, state, postal_code, rent_amount, house_type, bedrooms, bathrooms, furnished, availability_status, description } = req.body;
 
-    // Validate input
-    if (!address || !city || !state || !postal_code || !rent_amount || !house_type || !bedrooms || !bathrooms || furnished === undefined || !availability_status) {
+    // Fetch the property from the database based on the ID
+    const sql = `SELECT * FROM properties WHERE house_id = ?`;
+    db.query(sql, [propertyId], (err, result) => {
+        if (err) {
+            console.error("Error fetching property:", err);
+            return res.redirect(`/update-property/${propertyId}?error=Internal server error, please try again later.`);
+        }
+        if (result.length > 0) {
+            res.render('update-property', { error, success, property: result[0] });
+        } else {
+            res.redirect(`/update-property/${propertyId}?error=Property not found.`);
+        }
+    });
+});
+
+app.post("/update-property/:id", (req, res) => {
+    const propertyId = req.params.id;
+    const {
+        address = null,
+        city = null,
+        state = null,
+        postal_code = null,
+        rent_amount = null,
+        house_type = null,
+        bedrooms = null,
+        bathrooms = null,
+        furnished = null,
+        availability_status = null,
+        description = null
+    } = req.body;
+
+    // Validate required fields
+    if (!address || !city || !state || !postal_code || !rent_amount || !house_type || !bedrooms || !bathrooms || furnished === null || !availability_status) {
         return res.redirect(`/update-property/${propertyId}?error=All fields are required.`);
     }
 
-    // SQL query to update property details
     const sql = `
         UPDATE properties 
-        SET address = ?, city = ?, state = ?, postal_code = ?, rent_amount = ?, house_type = ?, bedrooms = ?, bathrooms = ?, furnished = ?, availability_status = ?, description = ? 
+        SET address = ?, city = ?, state = ?, postal_code = ?, rent_amount = ?, 
+            house_type = ?, bedrooms = ?, bathrooms = ?, furnished = ?, 
+            availability_status = ?, description = ? 
         WHERE house_id = ?
     `;
-    const values = [address, city, state, postal_code, rent_amount, house_type, bedrooms, bathrooms, furnished, availability_status, description, propertyId];
+    const values = [
+        address, city, state, postal_code, rent_amount, house_type,
+        bedrooms, bathrooms, furnished, availability_status, description, propertyId
+    ];
 
-    try {
-        // Update the property in the database
-        await db.query(sql, values);
+    db.query(sql, values, (err) => {
+        if (err) {
+            console.error("Error updating property:", err);
+            return res.redirect(`/admin-dashboard?error=Internal server error. Please try again later.`);
+        }
 
-        // Redirect to the update property page with a success message
-        res.redirect(`/update-property/${propertyId}?success=Property updated successfully.`);
-    } catch (err) {
-        console.error("Error updating property:", err);
-
-        // Redirect to the update property page with an error message
-        res.redirect(`/update-property/${propertyId}?error=Internal server error, please try again later.`);
-    }
+        res.redirect('/admin-dashboard?success=Property updated successfully.');
+    });
 });
 
+
+
+app.get("/bookings", function(req, res) {
+    // Assumes a table called test_table exists in your database
+    const query = `
+        SELECT b.booking_id, b.property_id, b.booking_date, b.start_date, b.end_date, b.customer_name, b.customer_email, p.address
+        FROM bookings b
+        JOIN properties p ON b.property_id = p.house_id;
+    `;
+    
+    db.query(query).then(results => {
+        console.log(results);  // Log results to the console for debugging
+        res.render('bookings', { bookings: results });  // Pass results to the view
+    }).catch(err => {
+        console.error('Error executing query:', err);
+        res.status(500).send('Error fetching bookings');
+    });
+});
 
 
 
