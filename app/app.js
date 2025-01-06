@@ -333,6 +333,123 @@ app.post('/userregistration', async (req, res) => {
     }
 });
 
+
+app.post('/delete-property/:id', async (req, res) => {
+    const propertyId = req.params.id;
+
+    try {
+        // Prepare SQL query
+        const sql = 'DELETE FROM properties WHERE house_id = ?';
+        const values = [propertyId];
+
+        // Execute the query
+        const result = await db.query(sql, values);
+
+        if (result.affectedRows > 0) {
+            res.status(200).json({ message: 'Property deleted successfully' });
+        } else {
+            res.status(404).json({ message: 'Property not found' });
+        }
+    } catch (error) {
+        console.error('Error deleting property:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
+// Route for rendering the property creation page
+app.get("/create-property", function(req, res) {
+    const { error, success } = req.query;
+    res.render('create-property', { error, success });
+});
+
+// Create a route for handling /create-property POST requests
+app.post("/submit-property-form", async (req, res) => {
+    const { address, city, state, postal_code, rent_amount, house_type, bedrooms, bathrooms, furnished, availability_status, description } = req.body;
+
+    // Validate input
+    if (!address || !city || !state || !postal_code || !rent_amount || !house_type || !bedrooms || !bathrooms || furnished === undefined || !availability_status) {
+        return res.redirect('/create-property?error=All fields are required.');
+    }
+
+    // SQL query to insert property into the database
+    const sql = `
+        INSERT INTO properties (address, city, state, postal_code, rent_amount, house_type, bedrooms, bathrooms, furnished, availability_status, description) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    const values = [address, city, state, postal_code, rent_amount, house_type, bedrooms, bathrooms, furnished, availability_status, description];
+
+    try {
+        // Save the property to the database
+        await db.query(sql, values);
+
+        // Redirect to the property creation page with a success message
+        res.redirect('/create-property?success=Property created successfully.');
+    } catch (err) {
+        console.error("Error creating property:", err);
+
+        // Redirect to the property creation page with an error message
+        res.redirect('/create-property?error=Internal server error, please try again later.');
+    }
+});
+
+
+// Route for rendering the property update page
+app.get("/update-property/:id", function(req, res) {
+    const { error, success } = req.query;
+    const propertyId = req.params.id;
+
+    // Fetch the property from the database based on the ID
+    const sql = `SELECT * FROM properties WHERE house_id = ?`;
+    
+    db.query(sql, [propertyId], (err, result) => {
+        if (err) {
+            console.error("Error fetching property:", err);
+            return res.redirect('/update-property/:id?error=Internal server error, please try again later.');
+        }
+        if (result.length > 0) {
+            res.render('update-property', { error, success, property: result[0] });
+        } else {
+            res.redirect('/update-property/:id?error=Property not found.');
+        }
+    });
+});
+
+// Route for handling /update-property PUT requests
+app.post("/update-property/:id", async (req, res) => {
+    const propertyId = req.params.id;
+    const { address, city, state, postal_code, rent_amount, house_type, bedrooms, bathrooms, furnished, availability_status, description } = req.body;
+
+    // Validate input
+    if (!address || !city || !state || !postal_code || !rent_amount || !house_type || !bedrooms || !bathrooms || furnished === undefined || !availability_status) {
+        return res.redirect(`/update-property/${propertyId}?error=All fields are required.`);
+    }
+
+    // SQL query to update property details
+    const sql = `
+        UPDATE properties 
+        SET address = ?, city = ?, state = ?, postal_code = ?, rent_amount = ?, house_type = ?, bedrooms = ?, bathrooms = ?, furnished = ?, availability_status = ?, description = ? 
+        WHERE house_id = ?
+    `;
+    const values = [address, city, state, postal_code, rent_amount, house_type, bedrooms, bathrooms, furnished, availability_status, description, propertyId];
+
+    try {
+        // Update the property in the database
+        await db.query(sql, values);
+
+        // Redirect to the update property page with a success message
+        res.redirect(`/update-property/${propertyId}?success=Property updated successfully.`);
+    } catch (err) {
+        console.error("Error updating property:", err);
+
+        // Redirect to the update property page with an error message
+        res.redirect(`/update-property/${propertyId}?error=Internal server error, please try again later.`);
+    }
+});
+
+
+
+
 // Start server on port 3000
 app.listen(3000,function(){
     console.log(`Server running at http://127.0.0.1:3000/`);

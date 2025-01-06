@@ -53,7 +53,9 @@ html
                 td
                   a.btn.btn-sm.btn-primary(href=`/property-details/${property.house_id}`) View Details
                 td
-                  a.btn.btn-sm.btn-warning(href=`/edit-property/${property.house_id}`) Edit
+                  a.btn.btn-sm.btn-warning(href=`/update-property/${property.house_id}`) Edit
+                  form(action=`/delete-property/${property.house_id}`, method="POST", style="display:inline;")
+                    button.btn.btn-sm.btn-danger(type="submit") Delete
       else
         p.text-center.text-muted No properties found.
 

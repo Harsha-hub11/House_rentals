@@ -1,0 +1,65 @@
+doctype html
+html
+  head
+    title Create New Property
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css")
+  body
+    include navbar1
+    .container.mt-5
+      h1.text-center Create New Property
+
+      //- Success Message Block
+      if success
+        .alert.alert-success(role="alert")
+          | #{success}
+
+      form(action="/submit-property-form" method="POST")
+        .mb-3
+          label.form-label(for="address") Address
+          input.form-control(type="text" name="address" id="address" placeholder="Enter property address" required)
+        .mb-3
+          label.form-label(for="city") City
+          input.form-control(type="text" name="city" id="city" placeholder="Enter city" required)
+        .mb-3
+          label.form-label(for="state") State
+          input.form-control(type="text" name="state" id="state" placeholder="Enter state" required)
+        .mb-3
+          label.form-label(for="postal_code") Postal Code
+          input.form-control(type="text" name="postal_code" id="postal_code" placeholder="Enter postal code" required)
+        .mb-3
+          label.form-label(for="rent_amount") Rent Amount (£)
+          input.form-control(type="number" step="0.01" name="rent_amount" id="rent_amount" placeholder="Enter rent amount" required)
+        .mb-3
+          label.form-label(for="house_type") House Type
+          select.form-select(name="house_type" id="house_type" required)
+            option(value="") Select House Type
+            option(value="Apartment") Apartment
+            option(value="Single-family") Single-family
+            option(value="Duplex") Duplex
+            option(value="Townhouse") Townhouse
+            option(value="Other") Other
+        .mb-3
+          label.form-label(for="bedrooms") Bedrooms
+          input.form-control(type="number" name="bedrooms" id="bedrooms" placeholder="Enter number of bedrooms" required)
+        .mb-3
+          label.form-label(for="bathrooms") Bathrooms
+          input.form-control(type="number" step="0.1" name="bathrooms" id="bathrooms" placeholder="Enter number of bathrooms" required)
+        .mb-3
+          label.form-label(for="furnished") Furnished
+          select.form-select(name="furnished" id="furnished" required)
+            option(value="1") Yes
+            option(value="0") No
+        .mb-3
+          label.form-label(for="availability_status") Availability Status
+          select.form-select(name="availability_status" id="availability_status" required)
+            option(value="Available") Available
+            option(value="Occupied") Occupied
+            option(value="Under Maintenance") Under Maintenance
+        .mb-3
+          label.form-label(for="description") Description
+          textarea.form-control(name="description" id="description" rows="4" placeholder="Enter property description")
+        .text-center
+          button.btn.btn-primary(type="submit") Submit
+          a.btn.btn-secondary(href="/all-properties-formatted") Cancel
+
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")
